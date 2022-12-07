@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhide.govwatch.mapper.PatentMapper">
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO `patent` (
+        `SHENQINGH`,
+        `SHENQINGR`,
+        `FAMINGMC`,
+        `SHENQINGLX`,
+        `GONKAIHAO`,
+        `GONKAIR`,
+        `PRISHENQINGRXM`,
+        `SECSHENQINGRXM`,
+        `SHENQINGRXM`,
+        `PRIADDRESS`,
+        `POSTCODE`,
+        `ADDRESS`,
+        `PRIFAMINGRXM`,
+        `FAMINGRXM`,
+        `DAILIJGDM`,
+        `DAILIJGMC`,
+        `DAILIRXM`,
+        `PIPC`,
+        `IPC`,
+        `YOUXIANQ`,
+        `LAWSTATUS`,
+        `SECLAWSTATUS`,
+        `MEMO`,
+        `ProvinceID`,
+        `ProvinceName`,
+        `CityID`,
+        `CityName`,
+        `CountyID`,
+        `CountyName`,
+        `ClientID`,
+        `ClientName`,
+        `CREATEMAN`,
+        `CREATETIME`,
+        `LASTUPDATETIME`
+        )
+        VALUES
+        <foreach collection="datas" item="data" separator=",">
+            ( #{data.shenqingh},
+            #{data.shenqingr},
+            #{data.famingmc},
+            #{data.shenqinglx},
+            #{data.gonkaihao},
+            #{data.gonkair},
+            #{data.prishenqingrxm},
+            #{data.secshenqingrxm},
+            #{data.shenqingrxm},
+            #{data.priaddress},
+            #{data.postcode},
+            #{data.address},
+            #{data.prifamingrxm},
+            #{data.famingrxm},
+            #{data.dailijgdm},
+            #{data.dailijgmc},
+            #{data.dailirxm},
+            #{data.pipc},
+            #{data.ipc},
+            #{data.youxianq},
+            #{data.lawstatus},
+            #{data.seclawstatus},
+            #{data.memo},
+            #{data.provinceId},
+            #{data.provinceName},
+            #{data.cityId},
+            #{data.cityName},
+            #{data.countyId},
+            #{data.countyName},
+            #{data.clientId},
+            #{data.clientName},
+            #{data.createman},
+            #{data.createtime},
+            #{data.lastupdatetime})
+        </foreach>
+    </insert>
+    <update id="updateBatch" parameterType="java.util.List">
+        <foreach collection="items" item="item" index="index" open="" close="" separator=";">
+            update patent
+            <set>
+                <if test="item.shenqingr != null">
+                    shenqingr=#{item.shenqingr},
+                </if>
+                <if test="item.famingmc != null">
+                    famingmc=#{item.famingmc},
+                </if>
+                <if test="item.shenqinglx != null">
+                    shenqinglx=#{item.shenqinglx},
+                </if>
+                <if test="item.gonkaihao != null">
+                    gonkaihao=#{item.gonkaihao},
+                </if>
+                <if test="item.gonkair != null">
+                    gonkair=#{item.gonkair},
+                </if>
+                <if test="item.prishenqingrxm != null">
+                    prishenqingrxm=#{item.prishenqingrxm},
+                </if>
+                <if test="item.secshenqingrxm != null">
+                    secshenqingrxm=#{item.secshenqingrxm},
+                </if>
+                <if test="item.shenqingrxm != null">
+                    shenqingrxm=#{item.shenqingrxm},
+                </if>
+                <if test="item.priaddress != null">
+                    priaddress=#{item.priaddress},
+                </if>
+                <if test="item.postcode != null">
+                    postcode=#{item.postcode},
+                </if>
+                <if test="item.address != null">
+                    address=#{item.address},
+                </if>
+                <if test="item.prifamingrxm != null">
+                    prifamingrxm=#{item.prifamingrxm},
+                </if>
+                <if test="item.famingrxm != null">
+                    famingrxm=#{item.famingrxm},
+                </if>
+                <if test="item.dailijgdm != null">
+                    dailijgdm=#{item.dailijgdm},
+                </if>
+                <if test="item.dailijgmc != null">
+                    dailijgmc=#{item.dailijgmc},
+                </if>
+                <if test="item.dailirxm != null">
+                    dailirxm=#{item.dailirxm},
+                </if>
+                <if test="item.pipc != null">
+                    pipc=#{item.pipc},
+                </if>
+                <if test="item.ipc != null">
+                    ipc=#{item.ipc},
+                </if>
+                <if test="item.youxianq != null">
+                    youxianq=#{item.youxianq},
+                </if>
+                <if test="item.lawstatus != null">
+                    lawstatus=#{item.lawstatus},
+                </if>
+                <if test="item.seclawstatus != null">
+                    seclawstatus=#{item.seclawstatus},
+                </if>
+                <if test="item.memo != null">
+                    memo=#{item.memo},
+                </if>
+
+                <if test="item.provinceId != null">
+                    provinceId=#{item.provinceId},
+                </if>
+                <if test="item.provinceName != null">
+                    provinceName=#{item.provinceName},
+                </if>
+
+                <if test="item.cityid != null">
+                    cityid=#{item.cityid},
+                </if>
+                <if test="item.cityName != null">
+                    cityName=#{item.cityName},
+                </if>
+                <if test="item.countyId != null">
+                    countyId=#{item.countyId},
+                </if>
+                <if test="item.countyName != null">
+                    countyName=#{item.countyName},
+                </if>
+                <if test="item.clientId != null">
+                    clientId=#{item.clientId},
+                </if>
+                <if test="item.clientName != null">
+                    clientName=#{item.clientName},
+                </if>
+                <if test="item.createman != null">
+                    createman=#{item.createman},
+                </if>
+                <if test="item.createtime != null">
+                    createtime=#{item.createtime},
+                </if>
+                <if test="item.lastupdatetime != null">
+                    lastupdatetime=#{item.lastupdatetime},
+                </if>
+            </set>
+            where shenqingh = #{item.shenqingh}
+        </foreach>
+    </update>
+    <delete id="deleteBatch" parameterType="java.util.List">
+        <if test="ids!=null">
+            <if test="ids.size()>0">
+                delete from patent where Shenqingh in
+                <foreach collection="ids" open="(" close=")" separator=" , " item="id">
+                    #{id}
+                </foreach>
+            </if>
+        </if>
+    </delete>
+    <select id="getEmptyAreaPatent" resultType="map">
+        Select Shenqingh,Shenqingrxm from patent Where LENGTH(ifnull(Address,''))=0 And Length(ifnull(Shenqingrxm,''))>0
+    </select>
+    <select id="getAll" resultType="com.zhide.govwatch.model.patent">
+        Select * from patent Order by shenqingr limit #{Begin},#{End}
+    </select>
+</mapper>

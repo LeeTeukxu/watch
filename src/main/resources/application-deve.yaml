@@ -1,0 +1,130 @@
+server:
+  port: 8080
+  reactive:
+    session:
+      timeout: 60m
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 12345678
+    url: jdbc:mysql://127.0.0.1:3306/watch?useSSL=false&allowMultiQueries=true&characterEncoding=utf-8
+#    url: jdbc:mysql://192.168.0.165:3306/watch?useSSL=false&allowMultiQueries=true&characterEncoding=utf-8
+  redis:
+    host: localhost
+    database: 3
+    port: 6379
+#    password: 123456
+  rabbitmq:
+    addresses: 127.0.0.1
+    username: guest
+    password: guest
+    listener:
+      simple:
+        acknowledge-mode: manual
+  freemarker:
+    template-loader-path: classpath:/templates/
+    enabled: true
+    cache: false
+    suffix: .ftl
+    charset: utf-8
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: none
+        format_sql: true
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  data:
+    mongodb:
+      database: watch
+    elasticsearch:
+      repositories:
+        enabled: true
+      cluster-nodes: 127.0.0.1:27017
+      cluster-name: elasticsearch
+  cache:
+    type: redis
+  elasticsearch:
+    uris: http://127.0.0.1:9200
+  ftp:
+    password: ftp_123_user
+    username: ftpUser
+    host: 127.0.0.1
+    port: 21
+  wxpay:
+    appid: wx4f8452fef8ffefb7
+    apikey: q7XKC4TH5ydVCazZ5WEsmSapdifFDUfq
+    mchid: 1622725273
+  socketio:
+    host: localhost
+    port: 9099
+    maxFramePayloadLength: 1048576
+    maxHttpContentLength: 1048576
+    bossCount: 1
+    workCount: 100
+    allowCustomRequests: true
+    upgradeTimeout: 1000000
+    pingTimeout: 6000000
+    pingInterval: 25000
+  mail:
+    password: Ejcprp335Jxaj
+    username: admin@zfbip.com
+    host: smtpdm.aliyun.com
+    port: 80
+    default-encoding: utf-8
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  session:
+    store-type: redis
+    timeout: 60m
+mvc:
+  hiddenmethod:
+    filter:
+      enabled: true
+publish:
+  version: 202112011709
+scheduling:
+  enabled: true
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core: ERROR
+          elasticsearch:
+            core: ERROR
+          jpa:
+            core: INFO
+      hibernate:
+        SQL: info
+        type:
+          descriptor:
+            sql: info
+    com:
+      zhide:
+        govwatch:
+          mapper: DEBUG
+  file:
+    path: /Users/jiangyongming/Project/watch/log
+  logback:
+    rollingpolicy:
+      max-history: 30
+      clean-history-on-start: true
+      max-file-size: 100MB
+  charset:
+    file: UTF-8
+mybatis:
+  type-aliases-package: com.zhide.govwatch.model
+  configuration:
+    use-actual-param-name: true
+  mapper-locations: mybatis/mapper/*.xml

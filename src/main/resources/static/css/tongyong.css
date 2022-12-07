@@ -1,0 +1,45 @@
+			.Meul_list{background:#fff;width: 100.7%;height: 76px;overflow: hidden;position: relative;margin-left: -8px;margin-top: -8px;box-shadow: -20px -7px 20px 2px #675e5e91;}
+			.top-logo{margin: 22px 0 0 55px;float: left;}
+			.top-link {padding-left: 90px;overflow: hidden;float: left;margin-top: 14px;}
+
+			.top-link li {float: left;font-size: 14px;}
+			.top-link ul{margin-top: 14px;margin-left: -74px;}
+			.top-link li, .top-link li a{padding: 0 18px;display: block;color: rgb(144,178,214);text-decoration: none;font-family: auto;}
+			.top-login {
+    float: right;
+/*    background: url(/img/ico1.png) no-repeat 0 0 #f56b22;*/
+    padding-left: 60px;
+    height: 43px;
+    padding-right: 30px;
+    padding-top: 33px;
+}
+.top-login li.login {
+/*    background: url(/img/ico-login.png) no-repeat center left;*/
+    padding-left: 35px;
+    list-style: none;
+    height: 26px;
+
+}
+.top-login a,.top-login li, .top-login a:visited, .top-login a:hover {
+    color: rgb(50, 54, 58);
+    text-decoration: none;
+    margin-top: 2px;
+    float: left;
+    margin-left: 3px;
+    font-family: -webkit-body;
+    font-size: 13px;
+}
+
+.home-bottom {
+    width: 100.5%;
+    text-align: center;
+    background: #ffffff;
+    color: #656565;
+    height: 47px;
+    line-height: 48px;
+    position: absolute;
+    bottom: 0;
+    margin-left: -10px;
+    font-family: auto;
+}
+.home-bottom a{color: #656565;}

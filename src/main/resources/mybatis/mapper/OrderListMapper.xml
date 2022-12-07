@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhide.govwatch.mapper.OrderListMapper">
+    <select id="getData" resultType="map">
+        Select * from (select *,row_number() over(ORDER by ${sortField} ${sortOrder}) as RowNum,Count(1) over() as
+        _TotalNum
+        from
+        view_orderlist WHERE 1=1
+        <if test="RoleName!='企业用户'">
+            <if test="RoleName!='系统管理员'">
+                AND UserID IN (SELECT DISTINCT ClientID FROM patent WHERE ClientID IS NOT NULL AND  (
+                CityID IN(SELECT AreaID FROM patentarea WHERE UserID=#{UserID}) OR
+                ProvinceID IN(SELECT AreaID FROM patentarea WHERE UserID=#{UserID}) OR
+                CountyID IN(SELECT AreaID FROM patentarea WHERE UserID=#{UserID})))
+            </if>
+        </if>
+        <if test="RoleName=='企业用户'">
+            And UserID=#{UserID}
+        </if>
+        <if test="ListType!=null">
+            <if test="ListType!=''">
+                <if test="ListType=='DZF'">
+                    AND
+                    PayState = 1
+                </if>
+                <if test="ListType=='DJZ'">
+                    AND
+                    DjState = 2
+                </if>
+                <if test="ListType=='DJWC'">
+                    AND
+                    DjState = 3
+                </if>
+            </if>
+        </if>
+        <if test="orItems!=null">
+            <if test="orItems.size()>0">
+                And
+                <foreach collection="orItems" open="(" close=")" separator=" OR " item="item">
+                    (${item.field} ${item.oper} #{item.value})
+                </foreach>
+            </if>
+        </if>
+        <if test="andItems!=null">
+            <if test="andItems.size()>0">
+                And
+                <foreach collection="andItems" open="(" close=")" separator=" And " item="item">
+                    (${item.field} ${item.oper} #{item.value})
+                </foreach>
+            </if>
+        </if>
+        )t
+        Where
+        RowNum
+        BETWEEN #{Begin} And #{End}
+    </select>
+    <select id="getBasicsData" resultType="map">
+        SELECT * FROM view_orderlist WHERE 1=1
+        <if test="RoleName!='企业用户'">
+            <if test="RoleName!='系统管理员'">
+                AND UserID IN (SELECT DISTINCT ClientID FROM patent WHERE ClientID IS NOT NULL AND  (
+                CityID IN(SELECT AreaID FROM patentarea WHERE UserID=#{UserID}) OR
+                ProvinceID IN(SELECT AreaID FROM patentarea WHERE UserID=#{UserID}) OR
+                CountyID IN(SELECT AreaID FROM patentarea WHERE UserID=#{UserID})))
+            </if>
+        </if>
+        <if test="RoleName=='企业用户'">
+            And UserID=#{UserID}
+        </if>
+        <if test="orItems!=null">
+            <if test="orItems.size()>0">
+                And
+                <foreach collection="orItems" open="(" close=")" separator=" OR " item="item">
+                    (${item.field} ${item.oper} #{item.value})
+                </foreach>
+            </if>
+        </if>
+        <if test="andItems!=null">
+            <if test="andItems.size()>0">
+                And
+                <foreach collection="andItems" open="(" close=")" separator=" And" item="item">
+                    (${item.field} ${item.oper} #{item.value})
+                </foreach>
+            </if>
+        </if>
+    </select>
+    <select id="getStatistic" resultType="map">
+        SELECT Num AS value,CASE Type WHEN 1 THEN '待支付' WHEN 2 THEN '支付成功' ELSE '支付失败' END AS name
+        FROM (SELECT COUNT(0) AS Num, PayState AS Type FROM view_orderlist
+        <where>
+            <if test="RoleName!='企业用户'">
+                <if test="RoleName!='系统管理员'">
+                    AND ClientID IN (SELECT DISTINCT ClientID FROM patent WHERE ClientID IS NOT NULL AND  (
+                    CityID IN(SELECT AreaID FROM patentarea WHERE UserID=#{UserID}) OR
+                    ProvinceID IN(SELECT AreaID FROM patentarea WHERE UserID=#{UserID}) OR
+                    CountyID IN(SELECT AreaID FROM patentarea WHERE UserID=#{UserID})))
+                </if>
+            </if>
+            <if test="andItems!=null">
+                <if test="andItems.size()>0">
+                    And
+                    <foreach collection="andItems" open="(" close=")" separator=" And " item="item">
+                        (${item.field} ${item.oper} #{item.value})
+                    </foreach>
+                </if>
+            </if>
+        </where>
+        GROUP BY PayState) AS derivedtbl_1
+        UNION
+        SELECT Num AS value,CASE Type WHEN 1 THEN '未支付' WHEN 2 THEN '代缴中' ELSE '代缴完成' END AS name
+        FROM (SELECT COUNT(0) as Num, DjState AS Type FROM view_orderlist
+        <where>
+            <if test="RoleName!='企业用户'">
+                <if test="RoleName!='系统管理员'">
+                    AND ClientID IN (SELECT DISTINCT ClientID FROM patent WHERE ClientID IS NOT NULL AND  (
+                    CityID IN(SELECT AreaID FROM patentarea WHERE UserID=#{UserID}) OR
+                    ProvinceID IN(SELECT AreaID FROM patentarea WHERE UserID=#{UserID}) OR
+                    CountyID IN(SELECT AreaID FROM patentarea WHERE UserID=#{UserID})))
+                </if>
+            </if>
+            <if test="andItems!=null">
+                <if test="andItems.size()>0">
+                    <foreach collection="andItems" open="(" close=")" separator=" And " item="item">
+                        (${item.field} ${item.oper} #{item.value})
+                    </foreach>
+                </if>
+            </if>
+        </where>
+        GROUP BY DjState) AS derivedtbl_1
+    </select>
+</mapper>

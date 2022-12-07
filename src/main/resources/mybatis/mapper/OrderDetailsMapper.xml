@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhide.govwatch.mapper.OrderDetailsMapper">
+    <select id="getData" resultType="com.zhide.govwatch.model.view_OrderDetails">
+        Select * from (select *,row_number() over(ORDER by ${sortField} ${sortOrder}) as RowNum,Count(1) over() as
+        _TotalNum
+        from
+        view_Orderdetails WHERE 1=1
+        <if test="OrderNo!=null">
+            <if test="OrderNo!=''">
+                And
+                OrderNo = #{OrderNo}
+            </if>
+        </if>
+        )t
+    </select>
+</mapper>

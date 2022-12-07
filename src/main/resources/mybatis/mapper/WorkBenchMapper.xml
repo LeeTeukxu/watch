@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhide.govwatch.mapper.WorkBenchMapper">
+    <select id="getAddFee" resultType="map">
+        Select SHENQINGRXM,
+        SHENQINGR,SHENQINGH,FAMINGMC,SHENQINGLX,FEENAME,MONEY,JIAOFEIR,CREATETIME,RowNum,_TotalNum from (
+        select SHENQINGRXM, SHENQINGR,SHENQINGH,FAMINGMC,SHENQINGLX,FEENAME,MONEY,JIAOFEIR,CREATETIME,row_number()
+        over(ORDER  by ${sortField} ${sortOrder}) as RowNum,Count(1) over() as _TotalNum
+        from view_govFee
+        <where>1=1
+            <if test="RoleName!='系统管理员'">
+                And (ProvinceID in(Select AreaID from patentArea Where UserID=#{UserID}) Or
+                CityID in(Select AreaID from patentArea Where UserID=#{UserID}) Or
+                CountyID in(Select AreaID from patentArea Where UserID=#{UserID}))
+            </if>
+
+            <if test="Date!=null and Date!=''">
+                and (CREATETIME &gt; '${Date} 00:00:00' and CREATETIME &lt; '${Date} 23:59:59')
+            </if>
+            <if test="orItems!=null">
+                <if test="orItems.size()>0">
+                    And
+                    <foreach collection="orItems" open="(" close=")" separator=" OR " item="item">
+                        (${item.field} ${item.oper} #{item.value})
+                    </foreach>
+                </if>
+            </if>
+        </where>)t Where RowNum BETWEEN  #{Begin} And #{End}
+    </select>
+
+    <select id="getPatent" resultType="map">
+        Select t.*
+        from (
+        select ClientID,ClientName,
+        SHENQINGH,FAMINGMC,SHENQINGLX,FAMINGRXM,SHENQINGR,SHENQINGRXM,LAWSTATUS,DAILIJGMC,LASTUPDATETIME,row_number() over(ORDER  by ${sortField} ${sortOrder}) as RowNum,Count(1) over() as _TotalNum
+        from Patent
+        <where>
+            LASTUPDATETIME is not null
+            <if test="RoleName!='系统管理员'">
+                And (ProvinceID in(Select AreaID from patentArea Where UserID=#{UserID}) Or
+                CityID in(Select AreaID from patentArea Where UserID=#{UserID}) Or
+                CountyID in(Select AreaID from patentArea Where UserID=#{UserID}))
+            </if>
+
+            <if test="Date!=null and Date!=''">
+                and (LASTUPDATETIME &gt; '${Date} 00:00:00' and LASTUPDATETIME &lt; '${Date} 23:59:59')
+            </if>
+            <if test="orItems!=null">
+                <if test="orItems.size()>0">
+                    And
+                    <foreach collection="orItems" open="(" close=")" separator=" OR " item="item">
+                        (${item.field} ${item.oper} #{item.value})
+                    </foreach>
+                </if>
+            </if>
+        </where>)t Where RowNum BETWEEN  #{Begin} And #{End}
+    </select>
+
+    <select id="getRecentFee" resultType="map">
+        Select * from (
+        select ClientID,ClientName, SHENQINGRXM,
+        SHENQINGR,SHENQINGH,FAMINGMC,SHENQINGLX,FEENAME,MONEY,JIAOFEIR,CREATETIME,DIFFDATE,row_number()
+        over(ORDER  by ${sortField} ${sortOrder}) as RowNum,Count(1) over() as _TotalNum
+        from view_govFee
+        <where>1=1
+            <if test="RoleName!='系统管理员'">
+                And (ProvinceID in(Select AreaID from patentArea Where UserID=#{UserID}) Or
+                CityID in(Select AreaID from patentArea Where UserID=#{UserID}) Or
+                CountyID in(Select AreaID from patentArea Where UserID=#{UserID}))
+            </if>
+
+            <if test="minDays!=null and minDays!='' and maxDays!=null and maxDays!=''">
+                and DIFFDATE>=#{minDays} and DIFFDATE &lt;=#{maxDays}
+            </if>
+            <if test="orItems!=null">
+                <if test="orItems.size()>0">
+                    And
+                    <foreach collection="orItems" open="(" close=")" separator=" OR " item="item">
+                        (${item.field} ${item.oper} #{item.value})
+                    </foreach>
+                </if>
+            </if>
+        </where>)t Where RowNum BETWEEN  #{Begin} And #{End}
+    </select>
+</mapper>

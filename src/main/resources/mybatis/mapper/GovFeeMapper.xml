@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhide.govwatch.mapper.GovFeeMapper">
+    <select id="getData" resultType="map">
+        Select
+        GovID,JIAOFEIR,FEENAME,MONEY,SHENQINGH,FAMINGMC,SHENQINGLX,SHENQINGR,LAWSTATUS,SHENQINGRXM,FAMINGRXM,_TotalNum
+        from (select
+        GovID,JIAOFEIR,FEENAME,MONEY,SHENQINGH,FAMINGMC,SHENQINGLX,SHENQINGR,LAWSTATUS,SHENQINGRXM,FAMINGRXM,row_number()
+        over(ORDER by ${sortField} ${sortOrder}) as RowNum,Count(1) over() as
+        _TotalNum  from view_govfee  WHERE 1=1
+        <if test="RoleName!='系统管理员'">
+            And (ProvinceID in(Select AreaID from patentArea Where UserID=#{UserID}) Or
+            CityID in(Select AreaID from patentArea Where UserID=#{UserID}) Or
+            CountyID in(Select AreaID from patentArea Where UserID=#{UserID}))
+        </if>
+        <if test="ClientId!=null">
+            <if test="ClientId!=''">
+                AND ClientID = #{ClientId}
+            </if>
+        </if>
+        <if test="orItems!=null">
+            <if test="orItems.size()>0">
+                And
+                <foreach collection="orItems" open="(" close=")" separator=" OR " item="item">
+                    (${item.field} ${item.oper} #{item.value})
+                </foreach>
+            </if>
+        </if>
+        <if test="andItems!=null">
+            <if test="andItems.size()>0">
+                And
+                <foreach collection="andItems" open="(" close=")" separator=" And " item="item">
+                    (${item.field} ${item.oper} #{item.value})
+                </foreach>
+            </if>
+        </if>
+        <if test="State!=''">
+            <if test="State!='ALL'">
+                <if test="State=='ZeroToThirty'">
+                    AND DATEDIFF(JIAOFEIR,NOW()) &gt;=0 AND DATEDIFF(JIAOFEIR,NOW()) &lt;=30
+                </if>
+                <if test="State=='ThirtyToNinety'">
+                    AND DATEDIFF(JIAOFEIR,NOW()) &gt;=30 AND DATEDIFF(JIAOFEIR,NOW()) &lt;=90
+                </if>
+                <if test="State=='Invalid'">
+                    AND DATEDIFF(JIAOFEIR,NOW()) &lt;0
+                </if>
+                <if test="State=='WJALL'">
+
+                </if>
+                <if test="State=='Customize'">
+                    AND DATEDIFF(JIAOFEIR,NOW()) = #{Code}
+                </if>
+            </if>
+        </if>
+        )t
+        Where
+        RowNum
+        BETWEEN #{Begin} And #{End}
+    </select>
+    <select id="getQuickData" resultType="map">
+        Select a.GovID,JIAOFEIR,FEENAME,MONEY,SHENQINGH,FAMINGMC,SHENQINGLX,SHENQINGR,LAWSTATUS,SHENQINGRXM,FAMINGRXM
+        from  view_govfee  a inner join
+       (select GovID  from view_govfee  WHERE 1=1
+        <if test="RoleName!='系统管理员'">
+            And (ProvinceID in(Select AreaID from patentArea Where UserID=#{UserID}) Or
+            CityID in(Select AreaID from patentArea Where UserID=#{UserID}) Or
+            CountyID in(Select AreaID from patentArea Where UserID=#{UserID}))
+        </if>
+        <if test="ClientId!=null">
+            <if test="ClientId!=''">
+                AND ClientID = #{ClientId}
+            </if>
+        </if>
+        <if test="orItems!=null">
+            <if test="orItems.size()>0">
+                And
+                <foreach collection="orItems" open="(" close=")" separator=" OR " item="item">
+                    (${item.field} ${item.oper} #{item.value})
+                </foreach>
+            </if>
+        </if>
+        <if test="andItems!=null">
+            <if test="andItems.size()>0">
+                And
+                <foreach collection="andItems" open="(" close=")" separator=" And " item="item">
+                    (${item.field} ${item.oper} #{item.value})
+                </foreach>
+            </if>
+        </if>
+        <if test="State!=''">
+            <if test="State!='ALL'">
+                <if test="State=='ZeroToThirty'">
+                    AND DATEDIFF(JIAOFEIR,NOW()) &gt;=0 AND DATEDIFF(JIAOFEIR,NOW()) &lt;=30
+                </if>
+                <if test="State=='ThirtyToNinety'">
+                    AND DATEDIFF(JIAOFEIR,NOW()) &gt;=30 AND DATEDIFF(JIAOFEIR,NOW()) &lt;=90
+                </if>
+                <if test="State=='Invalid'">
+                    AND DATEDIFF(JIAOFEIR,NOW()) &lt;0
+                </if>
+                <if test="State=='WJALL'">
+
+                </if>
+                <if test="State=='Customize'">
+                    AND DATEDIFF(JIAOFEIR,NOW()) = #{Code}
+                </if>
+            </if>
+        </if>   ORDER by ${sortField} ${sortOrder} limit #{Begin},#{End}
+        ) b on a.GovID=b.GovID  ORDER by ${sortField} ${sortOrder}
+    </select>
+    <select id="getQuickCount" resultType="int">
+        select Count(*) as Num  from view_govfee  WHERE 1=1
+        <if test="RoleName!='系统管理员'">
+            And (ProvinceID in(Select AreaID from patentArea Where UserID=#{UserID}) Or
+            CityID in(Select AreaID from patentArea Where UserID=#{UserID}) Or
+            CountyID in(Select AreaID from patentArea Where UserID=#{UserID}))
+        </if>
+        <if test="ClientId!=null">
+            <if test="ClientId!=''">
+                AND ClientID = #{ClientId}
+            </if>
+        </if>
+        <if test="orItems!=null">
+            <if test="orItems.size()>0">
+                And
+                <foreach collection="orItems" open="(" close=")" separator=" OR " item="item">
+                    (${item.field} ${item.oper} #{item.value})
+                </foreach>
+            </if>
+        </if>
+        <if test="andItems!=null">
+            <if test="andItems.size()>0">
+                And
+                <foreach collection="andItems" open="(" close=")" separator=" And " item="item">
+                    (${item.field} ${item.oper} #{item.value})
+                </foreach>
+            </if>
+        </if>
+        <if test="State!=''">
+            <if test="State!='ALL'">
+                <if test="State=='ZeroToThirty'">
+                    AND DATEDIFF(JIAOFEIR,NOW()) &gt;=0 AND DATEDIFF(JIAOFEIR,NOW()) &lt;=30
+                </if>
+                <if test="State=='ThirtyToNinety'">
+                    AND DATEDIFF(JIAOFEIR,NOW()) &gt;=30 AND DATEDIFF(JIAOFEIR,NOW()) &lt;=90
+                </if>
+                <if test="State=='Invalid'">
+                    AND DATEDIFF(JIAOFEIR,NOW()) &lt;0
+                </if>
+                <if test="State=='WJALL'">
+
+                </if>
+                <if test="State=='Customize'">
+                    AND DATEDIFF(JIAOFEIR,NOW()) = #{Code}
+                </if>
+            </if>
+        </if>
+    </select>
+    <select id="getGovCount" resultType="map">
+        <choose>
+            <when test="RoleID==2">
+                select 'x1' as name, count(0) as num from view_govFee Where DATEDIFF(JIAOFEIR,NOW()) &gt;=0 AND
+                DATEDIFF(JIAOFEIR,NOW()) &lt;=30
+                union
+                select 'x2' as name, count(0) as num from view_govFee Where DATEDIFF(JIAOFEIR,NOW()) &gt;=30 AND
+                DATEDIFF(JIAOFEIR,NOW()) &lt;=90
+                union
+                select 'x3' as name, count(0) as num from view_govFee Where DATEDIFF(JIAOFEIR,NOW()) &lt;0
+                union
+                select 'x4' as name, count(0) as num from view_govFee;
+            </when>
+            <when test="RoleID==6">
+                select 'x1' as name, count(0) as num from view_govFee Where DATEDIFF(JIAOFEIR,NOW()) &gt;=0 AND
+                DATEDIFF(JIAOFEIR,NOW()) &lt;=30 And Shenqingh in(Select Shenqingh from Patent Where ClientID=#{UserID})
+                union
+                select 'x2' as name, count(0) as num from view_govFee Where DATEDIFF(JIAOFEIR,NOW()) &gt;=30 AND
+                DATEDIFF(JIAOFEIR,NOW()) &lt;=90 And Shenqingh in(Select Shenqingh from Patent Where ClientID=#{UserID})
+                union
+                select 'x3' as name, count(0) as num from view_govFee Where DATEDIFF(JIAOFEIR,NOW()) &lt;0 And Shenqingh
+                in(Select Shenqingh from Patent Where ClientID=#{UserID})
+                union
+                select 'x4' as name, count(0) as num from view_govFee Where Shenqingh in(Select Shenqingh from Patent
+                Where ClientID=#{UserID});
+            </when>
+            <otherwise>
+                select 'x1' as name, (select count(0) as num from view_govFee Where DATEDIFF(JIAOFEIR,NOW()) &gt;=0 AND
+                DATEDIFF(JIAOFEIR,NOW()) &lt;=30 And (provinceid in (SELECT AreaID
+                from patentarea where UserID=#{UserID}) or cityid in(SELECT AreaID from patentarea where
+                UserID=#{UserID}) or
+                countyid in(SELECT AreaID from patentarea where UserID=#{UserID})))as num from DUAL
+                union
+                select 'x2' as name, (select count(0) as num from view_govFee Where DATEDIFF(JIAOFEIR,NOW()) &gt;=30 AND
+                DATEDIFF(JIAOFEIR,NOW()) &lt;=90 And (provinceid in (SELECT AreaID
+                from patentarea where UserID=#{UserID}) or cityid in(SELECT AreaID from patentarea where
+                UserID=#{UserID}) or
+                countyid in(SELECT AreaID from patentarea where UserID=#{UserID})))as num from DUAL
+                union
+                select 'x3' as name, (select count(0) as num from view_govFee Where DATEDIFF(JIAOFEIR,NOW()) &lt;0 And
+                (provinceid in (SELECT AreaID
+                from patentarea where UserID=#{UserID}) or cityid in(SELECT AreaID from patentarea where
+                UserID=#{UserID}) or
+                countyid in(SELECT AreaID from patentarea where UserID=#{UserID})))as num from DUAL
+                union
+                select 'x4' as name, (select count(0) as num from view_govFee Where (provinceid in (SELECT AreaID
+                from patentarea where UserID=#{UserID}) or cityid in(SELECT AreaID from patentarea where
+                UserID=#{UserID}) or
+                countyid in(SELECT AreaID from patentarea where UserID=#{UserID})))as num from DUAL;
+            </otherwise>
+        </choose>
+    </select>
+    <select id="getAll" resultType="com.zhide.govwatch.model.view_govfee">
+        Select * from view_govfee order by createTime limit #{Begin},#{End}
+    </select>
+</mapper>
